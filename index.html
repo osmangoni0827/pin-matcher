@@ -1,58 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pin Generator</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
 </head>
+
 <body>
     <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <div class="pin-generator half-width">
-                    <input class="form-control" type="text">
-                    <button class="generate-btn">Generate Pin</button>
+                    <input class="form-control" type="text" id="PinGenarator" placeholder="0">
+                    <button class="generate-btn" onclick="NewPinDisplay()">Generate Pin</button>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="input-section half-width">
-                    <input class="form-control" type="text">
+                    <input class="form-control" type="text" placeholder="0" id="Pininput">
                     <div class="numbers">
-                        <div class="calc-body">
+                        <div class="calc-body" id="Allbutton">
                             <div class="calc-button-row">
-                              <div class="button">7</div>
-                              <div class="button">8</div>
-                              <div class="button">9</div>
+                                <div class="button">7</div>
+                                <div class="button">8</div>
+                                <div class="button">9</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">4</div>
-                              <div class="button">5</div>
-                              <div class="button">6</div>
+                                <div class="button">4</div>
+                                <div class="button">5</div>
+                                <div class="button">6</div>
                             </div>
                             <div class="calc-button-row">
-                              <div class="button">1</div>
-                              <div class="button">2</div>
-                              <div class="button">3</div>
+                                <div class="button">1</div>
+                                <div class="button">2</div>
+                                <div class="button">3</div>
                             </div>
                             <div class="calc-button-row">
-                                <div class="button"><</div>
+                                <div class="button">X</div>
                                 <div class="button">0</div>
                                 <div class="button">C</div>
                             </div>
                             <div>
-                                <button type="submit" class="submit-btn">Submit</button>
-                                <p class="action-left">3 try left</p>
+                                <button type="submit" class="submit-btn" onclick="ClickSubmitButton()">Submit</button>
                             </div>
+                        </div>
+                        <p class="action-left"><span id="try-count">3</span> try left</p>
                     </div>
                 </div>
             </div>
+            <div class="notify-section" id="Notice">
+                <p class="notify" id="NoticeWrong">❌ Pin Didn't Match, Please try again</p>
+                <p class="notify" id="NoticeRight">✅ Pin Matched... Secret door is opening for you</p>
+            </div>
         </div>
-        <div class="notify-section">
-            <p class="notify">❌ Pin Didn't Match, Please try again</p>
-            <p class="notify">✅ Pin Matched... Secret door is opening for you</p>
-        </div>
-    </div>
+
+
+
+        <script>
+            var TryCount = GetId('try-count');
+            var count = parseInt(TryCount.innerText);
+            var Allbutton = GetId('Allbutton');
+            Allbutton.addEventListener('click', GetAllButtonNumber);
+
+            function ClickSubmitButton() {
+                var GivPin = GetId('Pininput');
+                var GeneratorPin = GetId('PinGenarator');
+                var NoticeRight = GetId('NoticeRight');
+                var NoticeWrong = GetId('NoticeWrong');
+                if (count > 1 && GivPin.value!='') {
+                    GetId('Notice').style.display = 'block';
+                    if (GivPin.value == GeneratorPin.value) {
+                        NoticeRight.style.display = 'block';
+                    }
+                    else {
+                        NoticeRight.style.display = 'none';
+                    }
+
+                    if (GivPin.value != GeneratorPin.value) {
+                        NoticeWrong.style.display = 'block';
+
+                        if (count > 0) {
+                            count--;
+                            TryCount.innerText = count;
+                        }
+                    }
+                    else {
+                        NoticeWrong.style.display = 'none';
+                    }
+                    GivPin.value = '';
+                    GeneratorPin.value = '';
+                }
+                else if (GivPin.value=='') {
+                    GetId('Notice').style.display = 'none';
+                }
+                else {
+                    GetId('Notice').style.display = 'none';
+                    TryCount.innerText = 0;
+                }
+
+            }
+
+
+            function GetAllButtonNumber(e) {
+                var PininputDisplay = GetId('Pininput');
+                let previous = PininputDisplay.value;
+                let NewNumber = e.target.innerText;
+                if (NewNumber == 'C') {
+                    PininputDisplay.value = '';
+                }
+                else if (NewNumber == 'X') {
+                    var x = '';
+                    for (var i = 0; i < previous.length - 1; i++) {
+                        x = x + previous[i];
+                    }
+                    PininputDisplay.value = x;
+                }
+                else if (NewNumber != 'Submit') {
+                    if (previous.length < 4) {
+                        previous = previous + NewNumber;
+                        PininputDisplay.value = previous;
+                    }
+                }
+            }
+
+            //                       PinGenaratorDispaly
+            function NewPinDisplay() {
+                var PinDisplay = GetId('PinGenarator');
+                PinDisplay.value = PinGenarator();
+            }
+
+            function PinGenarator() {
+                var NewPinGenarator = (Math.random() * 10000 + '').split('.')[0];
+                if (NewPinGenarator.length == 4) {
+                    return NewPinGenarator;
+                }
+                else {
+                    return "Try Again";
+                }
+            }
+
+
+
+
+
+            //                          Get All Id
+            function GetId(id) {
+                return document.getElementById(id);
+            }
+        </script>
 </body>
+
 </html>
