@@ -73,7 +73,7 @@
                 var GeneratorPin = GetId('PinGenarator');
                 var NoticeRight = GetId('NoticeRight');
                 var NoticeWrong = GetId('NoticeWrong');
-                if (count > 1 && GivPin.value!='') {
+                if (count > 0 && GivPin.value!='') {
                     GetId('Notice').style.display = 'block';
                     if (GivPin.value == GeneratorPin.value) {
                         NoticeRight.style.display = 'block';
